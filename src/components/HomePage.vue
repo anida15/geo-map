@@ -699,11 +699,10 @@ if(this.userHasRight){
     const geocoder = L.Control.Geocoder.nominatim();
   this.errorMessage = '';
 
-  geocoder.geocode(place.trim() , results => {
+  geocoder.geocode(place , results => {
 
     if (results ) {
-    console.log("herere",results)
-
+     
       // Remove existing markers
       this.removeMarkers();
 
@@ -715,7 +714,7 @@ if(this.userHasRight){
       results.forEach(result => {
         if (result.properties.address.country_code === "ke" ) {
 
-        // if( result.properties.address.state === "Homa Bay County"){
+        if( result.properties.address.state === "Homa Bay County"){
           const location = result.center;
           const locationName = result.name;
           const latitude = location.lat;
@@ -738,10 +737,10 @@ if(this.userHasRight){
             console.error('Invalid geocoding result:', result);
           }
 
-        // } else {
-        //   this.errorMessage = 'No results found in Homa Bay County';
-        //   console.error('No results found within in Homa Bay County');
-        // }
+        } else {
+          this.errorMessage = 'No results found in Homa Bay County';
+          console.error('No results found within in Homa Bay County');
+        }
 
         } else {
           this.errorMessage = 'No results found in Kenya';
