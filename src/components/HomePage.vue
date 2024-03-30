@@ -142,8 +142,82 @@ export default {
       ActualVillageDataStoreA :[],
       villageWithoutCoordinates: [],
       villageWithCoorinatates: [],
+
       storePosibleVillageLocation: [],
-   
+
+      villageCoordinates: [
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [1.018076, 35.000236],
+          },
+          "properties": {
+            "orgunit": {
+              "orgunit_id": "JHfgksjfhseuf",
+              "name": "Kitale",
+              "No_of_nets": 2213
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-0.1029109, 34.75417661],
+          },
+          "properties": {
+            "orgunit": {
+              "orgunit_id": "JH342ksjfhseuf",
+              "name": "Kisumu",
+              "No_of_nets": 23
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-0.1029109, 34.75417661],
+          },
+          "properties": {
+            "orgunit": {
+              "orgunit_id": "JH342ksjfhseuf",
+              "name": "Kisumu",
+              "No_of_nets": 23
+            }
+          }
+        },
+          {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-0.1029109, 34.75417661],
+          },
+          "properties": {
+            "orgunit": {
+              "orgunit_id": "JH342ksjfhseuf",
+              "name": "Kisumu",
+              "No_of_nets": 23
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [0.0236, 37.9062],
+          },
+          "properties": {
+            "orgunit": {
+              "orgunit_id": "JH34534jfhseuf",
+              "name": "tagania East",
+              "No_of_nets": 23324
+            }
+          }
+        },
+      ],
+
 
     };
 
@@ -293,7 +367,7 @@ export default {
      this.sub_location = data.sub_location
     },
     async getCountyVillages() {
-      this.countyVillages = await api.CountyVillages(1)//change for diffrent counties
+      this.countyVillages = await api.CountyVillages(9)//change for diffrent counties
 
     },
 
@@ -340,9 +414,12 @@ export default {
     // console.log(ActualVillageDataStoreA)
     },
 
+
     split() {
       this.structureVillageData()
-      console.log(this.ActualVillageDataStoreA)
+      this.villageWithCoorinatates = this.ActualVillageDataStoreA.filter(item => item.geometry.coordinates.length > 0)
+      this.villageWithoutCoordinates = this.ActualVillageDataStoreA.filter(item => item.geometry.coordinates.length === 0)
+      console.log(this.countyVillages)
     },
 
     register() {
@@ -388,6 +465,7 @@ export default {
 
       } else {
         const [latitude, longitude] = newVillageCoordinatesInput.split(',');
+
         const newVillage = {
           type: "Feature",
           geometry: {
@@ -401,7 +479,11 @@ export default {
           }
         };
 
+
       api.PostVillageCoordinates(newVillage)
+
+        this.villageWithCoorinatates.push(newVillage);
+
         alert("New Village Added")
 
       }

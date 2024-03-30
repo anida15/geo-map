@@ -37,7 +37,7 @@ const CountyVillages = async (county_id) => {
   const data = await AxionInstance.get(
     `/administrative_unit?county_id=${county_id}`
   );
-  return data;
+  return data.data.data;
 };
 
 const SubCountyVillages = async (sub_county_id) => {
