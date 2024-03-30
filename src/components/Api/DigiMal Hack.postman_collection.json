@@ -1,0 +1,285 @@
+{
+	"info": {
+		"_postman_id": "6ff5a025-774f-4864-bfd5-8547f10c9709",
+		"name": "DigiMal Hack",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23198186",
+		"_collection_link": "https://massnet-workspace.postman.co/workspace/Maseno-Hackathon~edbc2db9-fa63-4227-b9b6-ee0072768adf/collection/23198186-6ff5a025-774f-4864-bfd5-8547f10c9709?action=share&source=collection_link&creator=23198186"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Org Units",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Pass}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{local}}get_sub_counties_list?parent_id=OU314032",
+					"host": [
+						"{{local}}get_sub_counties_list"
+					],
+					"query": [
+						{
+							"key": "parent_id",
+							"value": "OU314032"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Distribution Post",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Pass}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{local}}posts_data",
+					"host": [
+						"{{local}}posts_data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "County Villages",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Pass}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{local}}administrative_unit?county_id=18",
+					"host": [
+						"{{local}}administrative_unit"
+					],
+					"query": [
+						{
+							"key": "county_id",
+							"value": "18"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sub County Villages",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Pass}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{local}}administrative_unit?subcounty_id=291",
+					"host": [
+						"{{local}}administrative_unit"
+					],
+					"query": [
+						{
+							"key": "subcounty_id",
+							"value": "291"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ward Villages",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Pass}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{local}}administrative_unit?ward_id=693",
+					"host": [
+						"{{local}}administrative_unit"
+					],
+					"query": [
+						{
+							"key": "ward_id",
+							"value": "693"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Location Villages",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Pass}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{local}}administrative_unit?location_id=1807",
+					"host": [
+						"{{local}}administrative_unit"
+					],
+					"query": [
+						{
+							"key": "location_id",
+							"value": "1807"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sub Location Villages",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Pass}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{local}}administrative_unit?sublocation_id=1808",
+					"host": [
+						"{{local}}administrative_unit"
+					],
+					"query": [
+						{
+							"key": "sublocation_id",
+							"value": "1808"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Village Data",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Pass}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{local}}administrative_unit?village_id=1809",
+					"host": [
+						"{{local}}administrative_unit"
+					],
+					"query": [
+						{
+							"key": "village_id",
+							"value": "1809"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Village Coordinates - Expected Soln",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"org_id\": \"pOsTvaq49pN\",\n    \"latitude\": \"-1.5021601817108392\",\n    \"longitude\": \"37.25359658836309\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://training.digimal.uonbi.ac.ke/api/village_coordinates",
+					"protocol": "https",
+					"host": [
+						"training",
+						"digimal",
+						"uonbi",
+						"ac",
+						"ke"
+					],
+					"path": [
+						"api",
+						"village_coordinates"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
