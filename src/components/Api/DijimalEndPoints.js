@@ -75,7 +75,7 @@ const VillageData = async (village_id) => {
   return data;
 };
 
-const VillageCoordinates = async (_data) => {
+const PostVillageCoordinates = async (_data) => {
   const data = await AxionInstance.post("village_coordinates", _data);
   return data;
 };
@@ -144,7 +144,7 @@ const api = {
   get_sub_counties_list,
   Distribution_Post,
   CountyVillages,
-  VillageCoordinates,
+  PostVillageCoordinates,
   SubCountyVillages,
   WardVillages,
   LocationVillages,
