@@ -38,7 +38,7 @@
       <input v-if="!menuVisible" type="text" placeholder="Search for a location..." v-model="searchQuery"
         @input="checkLocation">
       <button v-if="!menuVisible"  @click="selectPlace(this.searchQuery)" >Zoom Search</button> <i v-if="searchVisibleIcon"
-        @click="toggleSearchTorch" class="search-icon fas fa-search"></i>
+        @click="toggleSearchTorch" class="search-icon fas fa-search such"></i>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
       <div v-if="filteredPlaces.length > 0" class="search-results">
@@ -85,15 +85,13 @@
       <div class="search-container">
 
   <input type="text" class="villageInput" v-model="newVillageNameInput" placeholder="Village Name" @input="searchVillages">
-  <button @click="register">Update</button>
+  <button class="update" @click="register">Update</button>
   <div v-if="searchResults.length > 0" class="search-results">
     <p v-for="(result, index) in searchResults.slice(0, 5)" :key="index" :style="{ backgroundColor: index % 2 === 0 ? 'gray' : 'lightgray',marginBottom: '5px',cursor: 'pointer',color: 'white',width: '100%' ,padding:'5px'}" @click="selectPlace(result)">{{ result }} </p>
   </div>
 
         
-</div>
-
-     
+</div>     
 
 
       </div>
@@ -851,8 +849,8 @@ console.error('Selected place not found ' );
   border-top: 10px  #008000;
   border-right: 10px solid green;
   border-bottom: 10px solid blue;
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   -webkit-animation: spin 2s linear infinite;
   animation: spin 2s linear infinite;  
   }
@@ -875,6 +873,7 @@ console.error('Selected place not found ' );
 .register-button {
   background-color: #20C997 !important;
 }
+
 .distribution-button {
   background-color: #20C997 !important;
 }
@@ -886,5 +885,26 @@ console.error('Selected place not found ' );
   padding: 10px 20px;
   pointer: cursor !important;
   
+}
+.update {
+  background-color: #20C997 !important;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 20px;
+  pointer: cursor !important;
+}
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 50%;
+}
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
 }
 </style>
