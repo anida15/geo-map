@@ -94,6 +94,8 @@ const get_county_data = async (county_id) => {
   const word = [];
   const location = [];
   const sub_location = [];
+  let isLoading=false;
+  let split = false;
 
   const sub_county_data = await AxionInstance.get(
     `get_org_unit_with_children?parent_id=${county_id}`
@@ -126,6 +128,8 @@ const get_county_data = async (county_id) => {
             `get_org_unit_with_children?parent_id=${village_id}`
           );
           sub_location.push(village_data?.data?.message)
+          isLoading=false;
+          split = true;
         }
       }
     }
@@ -136,6 +140,8 @@ const get_county_data = async (county_id) => {
     word,
     location,
     sub_location,
+    isLoading,
+    split
   };
 };
 

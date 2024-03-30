@@ -1,7 +1,23 @@
 <template>
-
-  <div >
-
+<!-- add a spinner when loading the page and  stop when the page has loaded -->
+<div class="loader" v-if="div">
+<div v-if="isLoading" class="spinner"></div>
+ <!-- Add a card to display a welcome message -->
+    <div class="card" v-if="!isLoading && loading">
+        <div class="item">
+            <span class="label">Welcome:</span>
+            <span class="value">Welcome to DigiMal</span>
+        </div>
+        <div class="item">
+            <span class="label">Description:</span>
+            <span class="value">This is a Digimal mapping system</span>
+        </div>
+        <button type="button"  class="agree" @click="split">Agree</button>
+        
+    </div>
+</div>
+    
+     <div >
     <div>
       <div   style="width:100%; height: 10px;z-index: 1000; position: fixed;  top: 0; background-color: white;padding: 27px;  border-radius: 5px;box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);"  >
  
@@ -112,6 +128,9 @@ export default {
   data() {
     return {
       // Defination Of All Global Variable they can Be access using "this.variableName"
+      div: true,
+      isLoading: true,
+      loading: true,
       errorMessage: '',
       alertMessages:'',
       showAlertMessages: false,
@@ -225,6 +244,13 @@ export default {
 
   },
   mounted() {
+    // setTimeout(() => {
+    //   this.ActualVillageDataStoreA;
+    //   this.isLoading = false;      
+      
+    // },
+    // );
+  
     this.datastore();//authentication
     //get org unit data
     this.getOrgunitsData();
@@ -237,12 +263,13 @@ export default {
 
     //county data
     this.getCountyData()
+    this.structureVillageData()
 
     this.getCountyVillages()
+  
 
     this.filterOutsublocationdata()
 
-    this.structureVillageData()
 
     this.map = L.map('map').setView([0.0236, 37.9062], 6.49);
 
@@ -340,6 +367,7 @@ export default {
     }
   },
   methods: {
+    // load data
     // All function Method Are executed Here
     getAllInstancesOfKey(data, key) { 
       const _data = data.find(item => item.key === key)
@@ -365,6 +393,9 @@ export default {
      this.word = data.word
      this.location  = data.location
      this.sub_location = data.sub_location
+     this.isLoading= data.isLoading
+     
+ 
     },
     async getCountyVillages() {
       this.countyVillages = await api.CountyVillages(9)//change for diffrent counties
@@ -414,13 +445,16 @@ export default {
     // console.log(ActualVillageDataStoreA)
     },
 
-
-    split() {
+    async split() {
+      await this.structureVillageData()
+      this.loading = false;
+      this.div = false;
+      
       this.structureVillageData()
       this.villageWithCoorinatates = this.ActualVillageDataStoreA.filter(item => item.geometry.coordinates.length > 0)
       this.villageWithoutCoordinates = this.ActualVillageDataStoreA.filter(item => item.geometry.coordinates.length === 0)
-      console.log(this.countyVillages)
-    },
+      console.log(this.ActualVillageDataStoreA)
+      },
 
     register() {
       function distance(lat1, lat2, lon1, lon2) {
@@ -810,3 +844,47 @@ console.error('Selected place not found ' );
 
 </script>
 <style src="./MapComponentStyles.vue" scoped></style>
+<style>
+.spinner {
+  border: 16px solid #2E8B57.;
+  border-radius: 50%;
+  border-top: 10px  #008000;
+  border-right: 10px solid green;
+  border-bottom: 10px solid blue;
+  width: 100px;
+  height: 100px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;  
+  }
+  @-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  height: 100vh!important;
+
+}
+.register-button {
+  background-color: #20C997 !important;
+}
+.distribution-button {
+  background-color: #20C997 !important;
+}
+.agree{
+  background-color: #20C997 !important;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 20px;
+  pointer: cursor !important;
+  
+}
+</style>
