@@ -1,35 +1,39 @@
 <template>
-<!-- add a spinner when loading the page and  stop when the page has loaded -->
-<div class="loader" v-if="div">
-<div v-if="isLoading" class="spinner"></div>
- <!-- Add a card to display a welcome message -->
+  <!-- add a spinner when loading the page and  stop when the page has loaded -->
+  <div class="loader" v-if="div">
+    <div v-if="isLoading" class="spinner"></div>
+    <!-- Add a card to display a welcome message -->
     <div class="card" v-if="!isLoading && loading">
-        <div class="item">
-            <span class="label">Welcome:</span>
-            <span class="value">Welcome to DigiMal</span>
-        </div>
-        <div class="item">
-            <span class="label">Description:</span>
-            <span class="value">This is a Digimal mapping system</span>
-        </div>
-        <button type="button"  class="agree" @click="split">Agree</button>
-        
+      <div class="item">
+        <span class="label">Welcome:</span>
+        <span class="value">Welcome to DigiMal</span>
+      </div>
+      <div class="item">
+        <span class="label">Description:</span>
+        <span class="value">This is a Digimal mapping system</span>
+      </div>
+      <button type="button" class="agree" @click="split">Agree</button>
+
     </div>
-</div>
-    
-     <div >
+  </div>
+
+  <div>
     <div>
-      <div   style="width:100%; height: 10px;z-index: 1000; position: fixed;  top: 0; background-color: white;padding: 27px;  border-radius: 5px;box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);"  >
- 
-        <h4 class="moving-word" style="text-align: center;text-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5); ">  Location: Homa bay County</h4> 
+      <div
+        style="width:100%; height: 10px;z-index: 1000; position: fixed;  top: 0; background-color: white;padding: 27px;  border-radius: 5px;box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);">
+
+        <h4 class="moving-word" style="text-align: center;text-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5); "> Location: Homa
+          bay County</h4>
       </div>
     </div>
 
-    <div id="map"  ></div>
+    <div id="map"></div>
     <div>
 
-      <div style=""  >
-        <p  v-if="showAlertMessages" style=" position: fixed; top: 10%; left: 50%; transform: translate(-50%, -50%); background-color: darkslategrey; border-radius: 5px ; color: aliceblue;padding : 5px; "> {{this.alertMessages}} </p>
+      <div style="">
+        <p v-if="showAlertMessages"
+          style=" position: fixed; top: 10%; left: 50%; transform: translate(-50%, -50%); background-color: darkslategrey; border-radius: 5px ; color: aliceblue;padding : 5px; ">
+          {{ this.alertMessages }} </p>
       </div>
 
     </div>
@@ -37,12 +41,14 @@
     <div id="search-bar">
       <input v-if="!menuVisible" type="text" placeholder="Search for a location..." v-model="searchQuery"
         @input="checkLocation">
-      <button v-if="!menuVisible"  @click="selectPlace(this.searchQuery)" >Zoom Search</button> <i v-if="searchVisibleIcon"
-        @click="toggleSearchTorch" class="search-icon fas fa-search"></i>
+      <button v-if="!menuVisible" @click="selectPlace(this.searchQuery)">Zoom Search</button> <i
+        v-if="searchVisibleIcon" @click="toggleSearchTorch" class="search-icon fas fa-search"></i>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
       <div v-if="filteredPlaces.length > 0" class="search-results">
-        <p v-for="(place, index) in filteredPlaces.slice(0, 5)" :key="index" :style="{ backgroundColor: index % 2 === 0 ? 'gray' : 'lightgray',marginBottom: '5px',cursor: 'pointer',color: 'white',width: '100%' ,padding:'5px'}" @click="selectPlace(place)"  >{{ place }} </p>
+        <p v-for="(place, index) in filteredPlaces.slice(0, 5)" :key="index"
+          :style="{ backgroundColor: index % 2 === 0 ? 'gray' : 'lightgray', marginBottom: '5px', cursor: 'pointer', color: 'white', width: '100%', padding: '5px' }"
+          @click="selectPlace(place)">{{ place }} </p>
 
       </div>
 
@@ -52,27 +58,28 @@
       <i class="menu-icon fas fa-bars" @click="toggleMenu"></i>
       <p></p>
 
-      <button v-if="menuVisible" class="distribution-button" @click="split">
+      <button v-if="menuVisible" class="distribution-button" @click="toggleDistribution">
         {{ showDistribution ? 'Hide Distribution' : 'Show Distribution' }}
         <i :class="showDistribution ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
 
       </button>
       <p></p>
-      <button v-if="menuVisible && VillageregisterButton" class="register-button" @click="toggleVillageRegistration"> Village Update <i class="fas fa-map-marker-alt"></i>
+      <button v-if="menuVisible && VillageregisterButton" class="register-button" @click="toggleVillageRegistration">
+        Village Update <i class="fas fa-map-marker-alt"></i>
       </button>
       <div v-if="menuVisible && !VillageregisterButton" class="village-form">
-      <p>hint:"Double-click the location to generate its coordinates."</p>
+        <p>hint:"Double-click the location to generate its coordinates."</p>
 
-      <!-- Display possible Village locations from Search -->
-<p v-if="storePosibleVillageLocation.length > 0" class="search-results">Possible Locations Found:</p>
+        <!-- Display possible Village locations from Search -->
+        <p v-if="storePosibleVillageLocation.length > 0" class="search-results">Possible Locations Found:</p>
 
-<ul v-if="storePosibleVillageLocation.length > 0">
-  <li v-for="(location, index) in storePosibleVillageLocation" :key="index">
-    Village Name: {{ location.villageName }}  
-    Latitude: {{ location.latitude }}  
-    Longitude: {{ location.longitude }}  
-  </li>
-</ul>
+        <ul v-if="storePosibleVillageLocation.length > 0">
+          <li v-for="(location, index) in storePosibleVillageLocation" :key="index">
+            Village Name: {{ location.villageName }}
+            Latitude: {{ location.latitude }}
+            Longitude: {{ location.longitude }}
+          </li>
+        </ul>
 
 
 
@@ -82,38 +89,49 @@
         <p></p>
 
 
-      <div class="search-container">
+        <div class="search-container">
 
-  <input type="text" class="villageInput" v-model="newVillageNameInput" placeholder="Village Name" @input="searchVillages">
-  <button @click="register">Update</button>
-  <div v-if="searchResults.length > 0" class="search-results">
-    <p v-for="(result, index) in searchResults.slice(0, 5)" :key="index" :style="{ backgroundColor: index % 2 === 0 ? 'gray' : 'lightgray',marginBottom: '5px',cursor: 'pointer',color: 'white',width: '100%' ,padding:'5px'}" @click="selectPlace(result)">{{ result }} </p>
-  </div>
+          <input type="text" class="villageInput" v-model="newVillageNameInput" placeholder="Village Name"
+            @input="searchVillages">
+          <button @click="register">Update</button>
+          <div v-if="searchResults.length > 0" class="search-results">
+            <p v-for="(result, index) in searchResults.slice(0, 5)" :key="index"
+              :style="{ backgroundColor: index % 2 === 0 ? 'gray' : 'lightgray', marginBottom: '5px', cursor: 'pointer', color: 'white', width: '100%', padding: '5px' }"
+              @click="selectPlace(result)">{{ result }} </p>
+          </div>
 
-        
-</div>
 
-     
+        </div>
+
+
 
 
       </div>
 
     </div>
-        <div style="position: fixed;bottom: 10px; right: 10px;z-index: 1000;background-color: white;padding: 10px; padding-top:0px; border-radius: 5px;box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9); height: 100; max-width: 400px; border-radius: 10px; ">
-              <p style="border: 1px solid green; padding :5px; text-align: center; ">Location Details</p>
+    <div v-for="point in active_point" :key="point.properties.orgunit.org_id"
+      style="position: fixed; bottom: 10px; right: 10px; z-index: 1000; background-color: white; padding: 10px; padding-top: 0px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9); max-width: 400px; border-radius: 10px;">
+      <p style="border: 1px solid green; padding: 5px; text-align: center;">Location Details</p>
 
-              <p><i style="color: green;" class="fas fa-circle"></i>  Neme: <span>N/A</span></p>
+      <p><i style="color: green;" class="fas fa-circle"></i> Name: <span>{{ point.properties.orgunit.name }}</span></p>
 
-              <p><i style="color: blue;" class="fas fa-map-marker-alt"></i>  <span>N/A</span></p>
+      <p><i style="color: blue;" class="fas fa-map-marker-alt"></i> {{ point.properties.orgunit.code }}: <span>{{
+    point.properties.orgunit.parent_id }}</span></p>
 
-              <p > <i  style="color: blue;" class="fas fa-bed"></i> Number of Nets: <span>N/A</span></p>
-              <p><i style="color: red ;" class="fas fa-key"></i>  Id: <span>N/A</span></p> 
-              <p><i style="color: blue ;"  class="fas fa-book"></i> Registration Data: N/A</p>
-              <p><i style="color: green ;" class="fas fa-share"></i> Distribution Date: N/A</p>
-              <p><i style="color: green ;" class="fas fa-user-check"></i> Supervisor: <span>N/A</span></p>
+      <p><i style="color: blue;" class="fas fa-bed"></i> Number of Nets: <span>{{ point.properties.orgunit.nets
+          }}</span></p>
+      <p><i style="color: red;" class="fas fa-key"></i> Id: <span>{{ point.properties.orgunit.id }}</span></p>
+      <p><i style="color: blue;" class="fas fa-book"></i> Registration Data: {{
+    point.properties.orgunit.registration_data }}</p>
+      <p><i style="color: green;" class="fas fa-share"></i> Distribution Date: {{
+    point.properties.orgunit.distribution_date }}</p>
+      <p><i style="color: green;" class="fas fa-user-check"></i> Supervisor: <span>{{
+    point.properties.orgunit.supervisor }}</span></p>
+    </div>
 
 
-              </div>
+
+
 
   </div>
 </template>
@@ -132,7 +150,7 @@ export default {
       isLoading: true,
       loading: true,
       errorMessage: '',
-      alertMessages:'',
+      alertMessages: '',
       showAlertMessages: false,
       searchQuery: '',
       newVillageNameInput: '',
@@ -144,8 +162,8 @@ export default {
       VillageregisterButton: true,
       distribution_post_data: [],
       menuVisible: false,
-      searchVisibleIcon: false ,
-      userHasRight: true, 
+      searchVisibleIcon: false,
+      userHasRight: true,
       showFilter: true,
       filteredPlaces: [],
       searchResults: [],
@@ -153,16 +171,19 @@ export default {
       orgunit_data: [],
       countyData: [],//any county
       countyVillages: [],//any county village data
-      sub_county:[],
-      word:[],
-      location:[],
-      sub_location:[],// has all villages from org_table
-      structure_village_data:[],//data store B
-      ActualVillageDataStoreA :[],
+      sub_county: [],
+      word: [],
+      location: [],
+      sub_location: [],// has all villages from org_table
+      structure_village_data: [],//data store B
+      ActualVillageDataStoreA: [],
       villageWithoutCoordinates: [],
       villageWithCoorinatates: [],
-
+      selectedPoint: [],
+      updateVillageCoordinates: [],
+      active_point: [],
       storePosibleVillageLocation: [],
+
 
       villageCoordinates: [
         {
@@ -207,7 +228,7 @@ export default {
             }
           }
         },
-          {
+        {
           "type": "Feature",
           "geometry": {
             "type": "Point",
@@ -240,17 +261,17 @@ export default {
 
     };
 
-    
+
 
   },
   mounted() {
     // setTimeout(() => {
     //   this.ActualVillageDataStoreA;
     //   this.isLoading = false;      
-      
+
     // },
     // );
-  
+
     this.datastore();//authentication
     //get org unit data
     this.getOrgunitsData();
@@ -266,7 +287,7 @@ export default {
     this.structureVillageData()
 
     this.getCountyVillages()
-  
+
 
     this.filterOutsublocationdata()
 
@@ -303,14 +324,14 @@ export default {
             if (results && results.length > 0) {
 
               // Check if the location is in Kenya and state the location
-              if (results[0].properties.address.country_code === "ke" ) {
+              if (results[0].properties.address.country_code === "ke") {
 
                 const hierarchy = results[0].name;
                 const parts = hierarchy.split(',');
                 const newVillage = parts[0].trim();
                 const newCoordinates = lat.toString() + ',' + lng.toString();
                 this.newVillageCoordinatesInput = newCoordinates;
-                this.newVillageNameInput = newVillage;
+
 
 
                 console.log(newCoordinates, " ", newVillage)
@@ -369,7 +390,7 @@ export default {
   methods: {
     // load data
     // All function Method Are executed Here
-    getAllInstancesOfKey(data, key) { 
+    getAllInstancesOfKey(data, key) {
       const _data = data.find(item => item.key === key)
       return _data;
     },
@@ -381,21 +402,21 @@ export default {
     },
     async getHomabay_org_data() {
       this.homabay = await api.homabay_org_sub_county()
-      
+
     },
     // async get_distribution_data(){
     //   this.distribution_post_data = await api.Distribution_Post()
     // },
     async getCountyData() {
 
-     const data= await api.get_county_data("Ur2xRBDtazT")
-     this.sub_county = data.sub_county
-     this.word = data.word
-     this.location  = data.location
-     this.sub_location = data.sub_location
-     this.isLoading= data.isLoading
-     
- 
+      const data = await api.get_county_data("Ur2xRBDtazT")
+      this.sub_county = data.sub_county
+      this.word = data.word
+      this.location = data.location
+      this.sub_location = data.sub_location
+      this.isLoading = data.isLoading
+
+
     },
     async getCountyVillages() {
       this.countyVillages = await api.CountyVillages(9)//change for diffrent counties
@@ -407,56 +428,57 @@ export default {
       this.subloactiondata = this.countyData.filter((item) => {
         return item.key == 'sub_location'
       })
-    
+
 
     },
-    async structureVillageData(){
-      
-      this.structure_village_data= this.sub_location.map(item=>{
-           const __data= item.map(_item=>{
-              const _data ={
-                "type": "Feature",
-                "geometry": {
-                  "type": "Point",
-                  "coordinates": [_item?.latitude, _item?.longitude],
-                },
-                "properties": {
-                  "orgunit": {
-                    "id": _item?.id,
-                    "name": _item?.name,
-                    "code": _item?.code,
-                    "org_id": _item?.org_id,
-                    "parent_id": _item?.parent_id,
-                    "level_id": _item?.level_id,
-                    "supervisor":_item?.supervisor
-                  }
-                }
-              }   
-             
-              this.ActualVillageDataStoreA.push(_data)
+    async structureVillageData() {
 
-              
-              return _data
-            })
-            return __data
+      this.structure_village_data = this.sub_location.map(item => {
+        const __data = item.map(_item => {
+          const _data = {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [_item?.latitude, _item?.longitude],
+            },
+            "properties": {
+              "orgunit": {
+                "id": _item?.id,
+                "name": _item?.name,
+                "code": _item?.code,
+                "org_id": _item?.org_id,
+                "parent_id": _item?.parent_id,
+                "level_id": _item?.level_id,
+                "supervisor": _item?.supervisor
+              }
+            }
+          }
+
+          this.ActualVillageDataStoreA.push(_data)
+
+
+          return _data
         })
-        this.structure_village_data=this.structure_village_data.map(item=>item)
-  
-    // console.log(ActualVillageDataStoreA)
+        return __data
+      })
+      this.structure_village_data = this.structure_village_data.map(item => item)
+
+      // console.log(ActualVillageDataStoreA)
     },
 
     async split() {
       await this.structureVillageData()
       this.loading = false;
       this.div = false;
-      
+
       this.structureVillageData()
       this.villageWithCoorinatates = this.ActualVillageDataStoreA.filter(item => item.geometry.coordinates.length > 0)
       this.villageWithoutCoordinates = this.ActualVillageDataStoreA.filter(item => item.geometry.coordinates.length === 0)
       console.log(this.ActualVillageDataStoreA)
-      },
+    },
 
     register() {
+
       function distance(lat1, lat2, lon1, lon2) {
         lon1 = lon1 * Math.PI / 180;
         lon2 = lon2 * Math.PI / 180;
@@ -473,8 +495,15 @@ export default {
       }
 
       let newVillageNameInput = this.newVillageNameInput.trim();
+      const selectedPlace = this.ActualVillageDataStoreA.find(feature => feature.properties.orgunit.name === newVillageNameInput);
+
+      this.active_point.push(selectedPlace)
+      console.log(selectedPlace)
+
       let newVillageCoordinatesInput = this.newVillageCoordinatesInput.trim().replace(/\s+/g, '');
       let coordinatesStrings = [];
+
+      // Check if the village name already exists
       this.ActualVillageDataStoreA.forEach(feature => {
         const [latitude, longitude] = feature.geometry.coordinates;
         const coordinatesString = `${latitude},${longitude}`;
@@ -482,6 +511,8 @@ export default {
           coordinatesStrings.push(coordinatesString);
         }
       });
+
+
       if (coordinatesStrings.length > 0) {
         const [latitudeInput, longitudeInput] = newVillageCoordinatesInput.split(',');
         for (let i = 0; i < coordinatesStrings.length; i++) {
@@ -498,25 +529,44 @@ export default {
 
 
       } else {
-        const [latitude, longitude] = newVillageCoordinatesInput.split(',');
-
-        const newVillage = {
-          type: "Feature",
-          geometry: {
-            type: "Point",
-            coordinates: [parseFloat(latitude), parseFloat(longitude)]
-          },
-          properties: {
-            orgunit: {
-              orgunit_id: "pOsTvq49pN",
+        const [latitude, longitude] = newVillageCoordinatesInput.trim().split(',');
+        let newVillage
+        if (latitude === null || longitude === null) {
+          // Handle invalid input
+          console.error('Invalid input for latitude or longitude');
+        } else {
+          newVillage = this.active_point.map(_item => {
+            const _data = {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [latitude, longitude],
+              },
+              "properties": {
+                "orgunit": {
+                  "id": _item?.id,
+                  "name": _item?.name,
+                  "code": _item?.code,
+                  "org_id": _item?.org_id,
+                  "parent_id": _item?.parent_id,
+                  "level_id": _item?.level_id,
+                  "supervisor": _item?.supervisor
+                }
+              }
             }
-          }
-        };
+            return _data;
+          });
 
+          newVillage.geometry.coordinates = [latitude, longitude];
+        console.log(newVillage)
 
-      api.PostVillageCoordinates(newVillage)
+        }
+       
+
+        //api.PostVillageCoordinates(newVillage)
 
         this.villageWithCoorinatates.push(newVillage);
+        localStorage.setItem("villageWithCoorinatates", this.villageWithCoorinatates);
 
         alert("New Village Added")
 
@@ -538,242 +588,247 @@ export default {
       this.menuVisible = !this.menuVisible;
       this.searchVisibleIcon = true;
       // check if menuVisibleis true make error message empty
-      if(this.menuVisible){
+      if (this.menuVisible) {
         this.errorMessage = '';
       }
-      
+
     },
     toggleDistribution() {
       this.showDistribution = !this.showDistribution;
     }, checkLocation() {
 
       this.filteredPlaces = this.ActualVillageDataStoreA.filter(feature => {
+
         const name = feature.properties.orgunit.name.toLowerCase();
-        return name.includes(this.searchQuery.toLowerCase());
+        const _data = name.includes(this.searchQuery.toLowerCase());
+
+        return _data;
       }).map(feature => feature.properties.orgunit.name);
 
 
 
-      
+
     },
     removeMarkers() {
-    this.markers.forEach(marker => {
-      this.map.removeLayer(marker);
-    });
-    this.markers = []; // Clear the markers array
-  },
+      this.markers.forEach(marker => {
+        this.map.removeLayer(marker);
+      });
+      this.markers = []; // Clear the markers array
+    },
     searchVillages() {
 
-this.searchResults = this.ActualVillageDataStoreA.filter(feature => {
-  const name = feature.properties.orgunit.name.toLowerCase();
-  return name.includes(this.newVillageNameInput.toLowerCase());
-}).map(feature => feature.properties.orgunit.name);
+      this.searchResults = this.ActualVillageDataStoreA.filter(feature => {
+        const name = feature.properties.orgunit.name.toLowerCase();
+
+        return name.includes(this.newVillageNameInput.toLowerCase());
+      }).map(feature => feature.properties.orgunit.name);
 
 
 
 
-},  
-// searchLocation() {
-//   // Search Location by Name
-//   const geocoder = L.Control.Geocoder.nominatim();
-//   this.errorMessage = '';
+    },
+    // searchLocation() {
+    //   // Search Location by Name
+    //   const geocoder = L.Control.Geocoder.nominatim();
+    //   this.errorMessage = '';
 
-//   geocoder.geocode(this.searchQuery.trim(), results => {
-//     if (results && results.length > 0) {
-//       // Remove existing markers
-//       this.removeMarkers();
+    //   geocoder.geocode(this.searchQuery.trim(), results => {
+    //     if (results && results.length > 0) {
+    //       // Remove existing markers
+    //       this.removeMarkers();
 
-//       console.log('Geocoding results:', results);
-//       // Iterate through all results
-//       // Check if the location is in Kenya and state County data
-       
-//       results.forEach(result => {
-//         if (result.properties.address.country_code === "ke" ) {
+    //       console.log('Geocoding results:', results);
+    //       // Iterate through all results
+    //       // Check if the location is in Kenya and state County data
 
-//         if( result.properties.address.state === "Homa Bay County"){
-//           const location = result.center;
-//           const locationName = result.name;
-//           const latitude = location.lat;
-//           const longitude = location.lng;
+    //       results.forEach(result => {
+    //         if (result.properties.address.country_code === "ke" ) {
 
-//           if (latitude !== undefined && longitude !== undefined) {
-//             // Create marker for each result
-//             const marker = L.marker([latitude, longitude]).addTo(this.map);
-//             const zoomLevel = this.map.getZoom();
-//             marker.bindTooltip(`Zoom level : ${zoomLevel} <br> latitude: ${latitude}, longitude: ${longitude}<br>${locationName}<br> Net Allocation: 5362`, { permanent: true, direction: 'top' });
-//             this.markers.push(marker);
-//           } else {
-//             this.errorMessage = 'Invalid geocoding result';
-//             console.error('Invalid geocoding result:', result);
-//           }
+    //         if( result.properties.address.state === "Homa Bay County"){
+    //           const location = result.center;
+    //           const locationName = result.name;
+    //           const latitude = location.lat;
+    //           const longitude = location.lng;
 
-//         } else {
-//           this.errorMessage = 'No results found in Homa Bay County';
-//           console.error('No results found within in Homa Bay County');
-//         }
+    //           if (latitude !== undefined && longitude !== undefined) {
+    //             // Create marker for each result
+    //             const marker = L.marker([latitude, longitude]).addTo(this.map);
+    //             const zoomLevel = this.map.getZoom();
+    //             marker.bindTooltip(`Zoom level : ${zoomLevel} <br> latitude: ${latitude}, longitude: ${longitude}<br>${locationName}<br> Net Allocation: 5362`, { permanent: true, direction: 'top' });
+    //             this.markers.push(marker);
+    //           } else {
+    //             this.errorMessage = 'Invalid geocoding result';
+    //             console.error('Invalid geocoding result:', result);
+    //           }
 
-//         } else {
-//           this.errorMessage = 'No results found in Kenya';
-//           console.error('No results found within in Kenya');
-//         }
-//       });
+    //         } else {
+    //           this.errorMessage = 'No results found in Homa Bay County';
+    //           console.error('No results found within in Homa Bay County');
+    //         }
 
-//       // If there are markers, fit map bounds to all markers
-//       if (this.markers.length > 0) {
-//         const group = new L.featureGroup(this.markers);
-//         this.map.fitBounds(group.getBounds());
-//       }   
-//     } else {
-//       this.errorMessage = 'No results found';
-//       console.error('No results found');
-//     }
-//   });
+    //         } else {
+    //           this.errorMessage = 'No results found in Kenya';
+    //           console.error('No results found within in Kenya');
+    //         }
+    //       });
+
+    //       // If there are markers, fit map bounds to all markers
+    //       if (this.markers.length > 0) {
+    //         const group = new L.featureGroup(this.markers);
+    //         this.map.fitBounds(group.getBounds());
+    //       }   
+    //     } else {
+    //       this.errorMessage = 'No results found';
+    //       console.error('No results found');
+    //     }
+    //   });
 
 
-// },
- selectPlace(place) {
+    // },
+    selectPlace(place) {
 
       // Selected village is converted to get coordinateds
 
-    // searching location using coordinates 
-    // check if the input is place is empty
-    if (place === '') {
-      this.errorMessage = 'Please enter a location';
-      return;
-    }
+      // searching location using coordinates 
+      // check if the input is place is empty
+      if (place === '') {
+        this.errorMessage = 'Please enter a location';
+        return;
+      }
 
-  const selectedPlace = this.ActualVillageDataStoreA.find(feature => feature.properties.orgunit.name === place);
-  this.searchResults =[];
-  this.filteredPlaces = [];
-  
-  if (selectedPlace) {
-   
-    const coordinates = selectedPlace.geometry.coordinates;
-    const villageName = this.searchQuery = this.newVillageNameInput = selectedPlace.properties.orgunit.name;
-    const orgunit_id =selectedPlace.properties.orgunit.orgunit_id
-    const No_of_nets =selectedPlace.properties.orgunit.No_of_nets
+      const selectedPlace = this.ActualVillageDataStoreA.find(feature => feature.properties.orgunit.name === place);
+      this.active_point.push(selectedPlace)
+      this.searchResults = [];
+      this.filteredPlaces = [];
 
-    const coordinateString = coordinates.join(',');
-    const splitCoordinates = coordinateString.split(',');
-    const strippedCoordinates = splitCoordinates.map(coord => coord.trim());
-    const  rejoinedCoordinates = strippedCoordinates.join(',');
+      if (selectedPlace) {
 
+        const coordinates = selectedPlace.geometry.coordinates;
+        const villageName = this.searchQuery = this.newVillageNameInput = selectedPlace.properties.orgunit.name;
+        const orgunit_id = selectedPlace.properties.orgunit.orgunit_id
+        const No_of_nets = selectedPlace.properties.orgunit.No_of_nets
 
-    this.searchLocationWithCoordinates(rejoinedCoordinates, orgunit_id, villageName, No_of_nets);
+        const coordinateString = coordinates.join(',');
+        const splitCoordinates = coordinateString.split(',');
+        const strippedCoordinates = splitCoordinates.map(coord => coord.trim());
+        const rejoinedCoordinates = strippedCoordinates.join(',');
 
 
-    } else if(selectedPlace === undefined ) {
+        this.searchLocationWithCoordinates(rejoinedCoordinates, orgunit_id, villageName, No_of_nets);
+
+
+      } else if (selectedPlace === undefined) {
 
         //Check in the  data store C which has no coordinates 
-        const isSelectedPlaceHasNoCoordinates = this.ActualVillageDataStoreA.find(feature => feature.properties.orgunit.name.toLowerCase()  === place.toLowerCase() );
+        const isSelectedPlaceHasNoCoordinates = this.ActualVillageDataStoreA.find(feature => feature.properties.orgunit.name.toLowerCase() === place.toLowerCase());
         //if found then
-        if(isSelectedPlaceHasNoCoordinates){
+        if (isSelectedPlaceHasNoCoordinates) {
 
-        //check if user has right? 
-        if(this.userHasRight){
-          this.alertMessages = 'Allocate Coordinates to This location ';
-          // add timeout to alert message
-          this.showAlertMessages = true;
-         
-          setTimeout(() => {
-            this.showAlertMessages = false;
-          }, 5000);
+          //check if user has right? 
+          if (this.userHasRight) {
+            this.alertMessages = 'Allocate Coordinates to This location ';
+            // add timeout to alert message
+            this.showAlertMessages = true;
 
-        
-          
-          this.newVillageNameInput = place;
-          this.menuVisible = true;
-          this.VillageregisterButton = false;
-          this.searchVisibleIcon = true;
-          
-        }else  {
-          //else tell user location does not exist
-          this.errorMessage = 'No coordinates found for this location.';
-        }
-      }else if(isSelectedPlaceHasNoCoordinates === undefined){
-        // location Not Found but posible Longitude and latitude
-        //if not found in both data store B and C
+            setTimeout(() => {
+              this.showAlertMessages = false;
+            }, 5000);
 
 
-if(this.userHasRight){
-  console.log(place)
 
-    const geocoder = L.Control.Geocoder.nominatim();
-  this.errorMessage = '';
+            this.newVillageNameInput = place;
+            this.menuVisible = true;
+            this.VillageregisterButton = false;
+            this.searchVisibleIcon = true;
 
-  geocoder.geocode(place , results => {
-
-    if (results ) {
-     
-      // Remove existing markers
-      this.removeMarkers();
-
-      console.log('Geocoding results:', results);
-      // Iterate through all results
-      // Check if the location is in Kenya and state County data
-       
-      this.storePosibleVillageLocation=[];
-      results.forEach(result => {
-        if (result.properties.address.country_code === "ke" ) {
-
-        if( result.properties.address.state === "Homa Bay County"){
-          const location = result.center;
-          const locationName = result.name;
-          const latitude = location.lat;
-          const longitude = location.lng;
-
-          if (latitude !== undefined && longitude !== undefined) {
-            // Create marker for each result
-            const marker = L.marker([latitude, longitude]).addTo(this.map);
-            const zoomLevel = this.map.getZoom();
-            marker.bindTooltip(`Zoom level : ${zoomLevel} <br> latitude: ${latitude}, longitude: ${longitude}<br>${locationName}<br> Net Allocation: 5362`, { permanent: true, direction: 'top' });
-            this.markers.push(marker);
-            // store posible location with that county and village name
-            this.storePosibleVillageLocation.push({
-              "latitude": latitude,
-              "longitude": longitude,
-              "villageName": locationName
-            })
           } else {
-            this.errorMessage = 'Invalid geocoding result';
-            console.error('Invalid geocoding result:', result);
+            //else tell user location does not exist
+            this.errorMessage = 'No coordinates found for this location.';
+          }
+        } else if (isSelectedPlaceHasNoCoordinates === undefined) {
+          // location Not Found but posible Longitude and latitude
+          //if not found in both data store B and C
+
+
+          if (this.userHasRight) {
+            console.log(place)
+
+            const geocoder = L.Control.Geocoder.nominatim();
+            this.errorMessage = '';
+
+            geocoder.geocode(place, results => {
+
+              if (results) {
+
+                // Remove existing markers
+                this.removeMarkers();
+
+                console.log('Geocoding results:', results);
+                // Iterate through all results
+                // Check if the location is in Kenya and state County data
+
+                this.storePosibleVillageLocation = [];
+                results.forEach(result => {
+                  if (result.properties.address.country_code === "ke") {
+
+                    if (result.properties.address.state === "Homa Bay County") {
+                      const location = result.center;
+                      const locationName = result.name;
+                      const latitude = location.lat;
+                      const longitude = location.lng;
+
+                      if (latitude !== undefined && longitude !== undefined) {
+                        // Create marker for each result
+                        const marker = L.marker([latitude, longitude]).addTo(this.map);
+                        const zoomLevel = this.map.getZoom();
+                        marker.bindTooltip(`Zoom level : ${zoomLevel} <br> latitude: ${latitude}, longitude: ${longitude}<br>${locationName}<br> Net Allocation: 5362`, { permanent: true, direction: 'top' });
+                        this.markers.push(marker);
+                        // store posible location with that county and village name
+                        this.storePosibleVillageLocation.push({
+                          "latitude": latitude,
+                          "longitude": longitude,
+                          "villageName": locationName
+                        })
+                      } else {
+                        this.errorMessage = 'Invalid geocoding result';
+                        console.error('Invalid geocoding result:', result);
+                      }
+
+                    } else {
+                      this.errorMessage = 'No results found in Homa Bay County';
+                      console.error('No results found within in Homa Bay County');
+                    }
+
+                  } else {
+                    this.errorMessage = 'No results found in Kenya';
+                    console.error('No results found within in Kenya');
+                  }
+                });
+
+                // If there are markers, fit map bounds to all markers
+                if (this.markers.length > 0) {
+                  const group = new L.featureGroup(this.markers);
+                  this.map.fitBounds(group.getBounds());
+                }
+              } else {
+                this.errorMessage = 'No results found';
+                console.error('No results found');
+              }
+            });
+
+
+
+          } else {
+            this.errorMessage = 'Selected place not found';
+            console.error('Selected place not found ');
+
           }
 
-        } else {
-          this.errorMessage = 'No results found in Homa Bay County';
-          console.error('No results found within in Homa Bay County');
+
+
+
+
         }
-
-        } else {
-          this.errorMessage = 'No results found in Kenya';
-          console.error('No results found within in Kenya');
-        }
-      });
-
-      // If there are markers, fit map bounds to all markers
-      if (this.markers.length > 0) {
-        const group = new L.featureGroup(this.markers);
-        this.map.fitBounds(group.getBounds());
-      }   
-    } else {
-      this.errorMessage = 'No results found';
-      console.error('No results found');
-    }
-  });
-
-
-
-}else{
-this.errorMessage = 'Selected place not found';
-console.error('Selected place not found ' );
-
-}
-         
-
-        
-           
-        
-      }
 
       } else {
 
@@ -845,45 +900,60 @@ console.error('Selected place not found ' );
 <style src="./MapComponentStyles.vue" scoped></style>
 <style>
 .spinner {
-  border: 16px solid #2E8B57.;
+  border: 16px solid #2E8B57;
   border-radius: 50%;
-  border-top: 10px  #008000;
+  border-top: 10px #008000;
   border-right: 10px solid green;
   border-bottom: 10px solid blue;
   width: 100px;
   height: 100px;
   -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;  
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
   }
-  @-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
+
 .loader {
   display: flex;
   justify-content: center;
-  align-items: center; 
-  height: 100vh!important;
+  align-items: center;
+  height: 100vh !important;
 
 }
+
 .register-button {
   background-color: #20C997 !important;
 }
+
 .distribution-button {
   background-color: #20C997 !important;
 }
-.agree{
+
+.agree {
   background-color: #20C997 !important;
   border: none;
   border-radius: 5px;
   color: white;
   padding: 10px 20px;
   pointer: cursor !important;
-  
+
 }
 </style>
