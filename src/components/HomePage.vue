@@ -21,7 +21,7 @@
     <div>
       <div   style="width:100%; height: 10px;z-index: 1000; position: fixed;  top: 0; background-color: white;padding: 27px;  border-radius: 5px;box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);"  >
  
-        <!-- <h4 class="moving-word" style="text-align: center;text-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5); ">  DigiMal </h4> -->
+        <h4 class="moving-word" style="text-align: center;text-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5); ">  Location: Homa bay County</h4> 
       </div>
     </div>
 
@@ -37,12 +37,12 @@
     <div id="search-bar">
       <input v-if="!menuVisible" type="text" placeholder="Search for a location..." v-model="searchQuery"
         @input="checkLocation">
-      <button v-if="!menuVisible" @click="searchLocation">Zoom Search</button> <i v-if="searchVisibleIcon"
+      <button v-if="!menuVisible"  @click="selectPlace(this.searchQuery)" >Zoom Search</button> <i v-if="searchVisibleIcon"
         @click="toggleSearchTorch" class="search-icon fas fa-search"></i>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
       <div v-if="filteredPlaces.length > 0" class="search-results">
-        <p v-for="(place, index) in filteredPlaces.slice(0, 5)" :key="index" @click="selectPlace(place)">{{ place }}</p>
+        <p v-for="(place, index) in filteredPlaces.slice(0, 5)" :key="index" :style="{ backgroundColor: index % 2 === 0 ? 'gray' : 'lightgray',marginBottom: '5px',cursor: 'pointer',color: 'white',width: '100%' ,padding:'5px'}" @click="selectPlace(place)"  >{{ place }} </p>
 
       </div>
 
@@ -61,85 +61,56 @@
       <button v-if="menuVisible && VillageregisterButton" class="register-button" @click="toggleVillageRegistration"> Village Update <i class="fas fa-map-marker-alt"></i>
       </button>
       <div v-if="menuVisible && !VillageregisterButton" class="village-form">
+      <p>hint:"Double-click the location to generate its coordinates."</p>
+
+      <!-- Display possible Village locations from Search -->
+<p v-if="storePosibleVillageLocation.length > 0" class="search-results">Possible Locations Found:</p>
+
+<ul v-if="storePosibleVillageLocation.length > 0">
+  <li v-for="(location, index) in storePosibleVillageLocation" :key="index">
+    Village Name: {{ location.villageName }}  
+    Latitude: {{ location.latitude }}  
+    Longitude: {{ location.longitude }}  
+  </li>
+</ul>
+
+
+
+
         <p></p>
         <input type="text" v-model="newVillageCoordinatesInput" placeholder="Village Coordinates">
         <p></p>
 
 
-
-
       <div class="search-container">
+
   <input type="text" class="villageInput" v-model="newVillageNameInput" placeholder="Village Name" @input="searchVillages">
   <button @click="register">Update</button>
   <div v-if="searchResults.length > 0" class="search-results">
-    <p v-for="(result, index) in searchResults" :key="index" :style="{ backgroundColor: index % 2 === 0 ? 'gray' : 'lightgray',marginBottom: '5px',cursor: 'pointer',color: 'white',width: '100%' ,padding:'5px'}" @click="selectPlace(result)">{{ result }} </p>
+    <p v-for="(result, index) in searchResults.slice(0, 5)" :key="index" :style="{ backgroundColor: index % 2 === 0 ? 'gray' : 'lightgray',marginBottom: '5px',cursor: 'pointer',color: 'white',width: '100%' ,padding:'5px'}" @click="selectPlace(result)">{{ result }} </p>
   </div>
 
         
 </div>
 
-      <p>hint:"Double-click the location to generate its coordinates."</p>
-      <div style="margin-top: 20px; box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);  padding: 10px;">
-        <!-- i want to create a card to dislaye section for a County Detaisl i also want a place to select count using  option buttons
-        -->
-        <div style=" box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5)" >
-          <span style="padding: 10px; margin-right: 10px;"> Counties </span>
-          <select style="width: 220px;padding: 10px; margin-right: 10px;border: 1px solid #ccc;border-radius: 5px; outline: none;">
-            <option>Homabay</option>
-            <option>Kisumu</option>
-            <option>Siaya</option>
-            <option>Busia</option>
-            <option>Vihiga</option>
-            <option>Kakamega</option>
-            <option>Bungoma</option>
-
-          </select>
-        </div> 
-        <div class="card">
-        <div class="item">
-            <span class="label">Sub-County:</span>
-            <span class="value">Sub-County</span>
-        </div>
-        <div class="item">
-            <span class="label">Word:</span>
-            <span class="value">Word</span>
-        </div>
-        <div class="item">
-            <span class="label">Location:</span>
-            <span class="value">Location</span>
-        </div>
-        <div class="item">
-            <span class="label">Sub-Location:</span>
-            <span class="value">Sub-Location</span>
-        </div>
-        <div class="item">
-            <span class="label">Village:</span>
-            <span class="value">Village</span>
-        </div>
-    </div>
-
- 
-          
-        </div>   
- 
+     
 
 
       </div>
 
     </div>
-        <!-- Create a Display page to be located below the screen on the left side fixed location -->
         <div style="position: fixed;bottom: 10px; right: 10px;z-index: 1000;background-color: white;padding: 10px; padding-top:0px; border-radius: 5px;box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9); height: 100; max-width: 400px; border-radius: 10px; ">
               <p style="border: 1px solid green; padding :5px; text-align: center; ">Location Details</p>
 
-              <p><i style="color: green;" class="fas fa-circle"></i>  Neme: <span>Kitale</span></p>
+              <p><i style="color: green;" class="fas fa-circle"></i>  Neme: <span>N/A</span></p>
 
-              <p><i style="color: blue;" class="fas fa-map-marker-alt"></i>  <span>1.018076, 35.000236</span></p>
+              <p><i style="color: blue;" class="fas fa-map-marker-alt"></i>  <span>N/A</span></p>
 
-              <p > <i  style="color: blue;" class="fas fa-bed"></i> Number of Nets: <span>2213</span></p>
-              <p><i style="color: red ;" class="fas fa-key"></i>  Id: <span>JHfgksjfhseuf</span></p> 
-              <p><i style="color: blue ;"  class="fas fa-book"></i> Registration Data: date</p>
-              <p><i style="color: green ;" class="fas fa-share"></i> Distribution Date: date</p>
-              <p><i style="color: green ;" class="fas fa-user-check"></i> Supervisor: <span>John Doe</span></p>
+              <p > <i  style="color: blue;" class="fas fa-bed"></i> Number of Nets: <span>N/A</span></p>
+              <p><i style="color: red ;" class="fas fa-key"></i>  Id: <span>N/A</span></p> 
+              <p><i style="color: blue ;"  class="fas fa-book"></i> Registration Data: N/A</p>
+              <p><i style="color: green ;" class="fas fa-share"></i> Distribution Date: N/A</p>
+              <p><i style="color: green ;" class="fas fa-user-check"></i> Supervisor: <span>N/A</span></p>
 
 
               </div>
@@ -172,23 +143,16 @@ export default {
       showDistribution: false,
       VillageregisterButton: true,
       distribution_post_data: [],
- 
       menuVisible: false,
-
       searchVisibleIcon: false ,
-
       userHasRight: true, 
       showFilter: true,
       filteredPlaces: [],
       searchResults: [],
-
-
       authData: [],
       orgunit_data: [],
-      
       countyData: [],//any county
       countyVillages: [],//any county village data
-    
       sub_county:[],
       word:[],
       location:[],
@@ -197,6 +161,9 @@ export default {
       ActualVillageDataStoreA :[],
       villageWithoutCoordinates: [],
       villageWithCoorinatates: [],
+
+      storePosibleVillageLocation: [],
+
       villageCoordinates: [
         {
           "type": "Feature",
@@ -230,6 +197,34 @@ export default {
           "type": "Feature",
           "geometry": {
             "type": "Point",
+            "coordinates": [-0.1029109, 34.75417661],
+          },
+          "properties": {
+            "orgunit": {
+              "orgunit_id": "JH342ksjfhseuf",
+              "name": "Kisumu",
+              "No_of_nets": 23
+            }
+          }
+        },
+          {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-0.1029109, 34.75417661],
+          },
+          "properties": {
+            "orgunit": {
+              "orgunit_id": "JH342ksjfhseuf",
+              "name": "Kisumu",
+              "No_of_nets": 23
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
             "coordinates": [0.0236, 37.9062],
           },
           "properties": {
@@ -241,6 +236,7 @@ export default {
           }
         },
       ],
+
 
     };
 
@@ -306,7 +302,8 @@ export default {
           geocoder.reverse(e.latlng, this.map.options.crs.scale(this.map.getZoom()), results => {
             if (results && results.length > 0) {
 
-              if (results[0].properties.address.country_code === "ke") {
+              // Check if the location is in Kenya and state the location
+              if (results[0].properties.address.country_code === "ke" ) {
 
                 const hierarchy = results[0].name;
                 const parts = hierarchy.split(',');
@@ -401,7 +398,7 @@ export default {
  
     },
     async getCountyVillages() {
-      this.countyVillages = await api.CountyVillages(1)//change for diffrent counties
+      this.countyVillages = await api.CountyVillages(9)//change for diffrent counties
 
     },
 
@@ -452,8 +449,12 @@ export default {
       await this.structureVillageData()
       this.loading = false;
       this.div = false;
+      
+      this.structureVillageData()
+      this.villageWithCoorinatates = this.ActualVillageDataStoreA.filter(item => item.geometry.coordinates.length > 0)
+      this.villageWithoutCoordinates = this.ActualVillageDataStoreA.filter(item => item.geometry.coordinates.length === 0)
       console.log(this.ActualVillageDataStoreA)
-    },
+      },
 
     register() {
       function distance(lat1, lat2, lon1, lon2) {
@@ -498,6 +499,7 @@ export default {
 
       } else {
         const [latitude, longitude] = newVillageCoordinatesInput.split(',');
+
         const newVillage = {
           type: "Feature",
           geometry: {
@@ -511,7 +513,10 @@ export default {
           }
         };
 
-        this.villageCoordinates.push(newVillage);
+
+      api.PostVillageCoordinates(newVillage)
+
+        this.villageWithCoorinatates.push(newVillage);
 
         alert("New Village Added")
 
@@ -551,84 +556,100 @@ export default {
 
       
     },
+    removeMarkers() {
+    this.markers.forEach(marker => {
+      this.map.removeLayer(marker);
+    });
+    this.markers = []; // Clear the markers array
+  },
     searchVillages() {
 
 this.searchResults = this.ActualVillageDataStoreA.filter(feature => {
   const name = feature.properties.orgunit.name.toLowerCase();
-  return name.includes(this.searchQuery.toLowerCase());
+  return name.includes(this.newVillageNameInput.toLowerCase());
 }).map(feature => feature.properties.orgunit.name);
 
 
 
 
 },  
-    searchLocation() {
-      // Search Location by Name
-      const geocoder = L.Control.Geocoder.nominatim();
-      this.errorMessage = '';
+// searchLocation() {
+//   // Search Location by Name
+//   const geocoder = L.Control.Geocoder.nominatim();
+//   this.errorMessage = '';
 
-      geocoder.geocode(this.searchQuery.trim(), results => {
+//   geocoder.geocode(this.searchQuery.trim(), results => {
+//     if (results && results.length > 0) {
+//       // Remove existing markers
+//       this.removeMarkers();
 
-        if (results && results.length > 0) {
-          let result = null;
-          for (let i = 0; i < results.length; i++) {
-            const properties = results[i].properties;
-            if (properties.address.country_code === "ke") {
-              result = results[i];
-              break;
-            }
-          }
+//       console.log('Geocoding results:', results);
+//       // Iterate through all results
+//       // Check if the location is in Kenya and state County data
+       
+//       results.forEach(result => {
+//         if (result.properties.address.country_code === "ke" ) {
+
+//         if( result.properties.address.state === "Homa Bay County"){
+//           const location = result.center;
+//           const locationName = result.name;
+//           const latitude = location.lat;
+//           const longitude = location.lng;
+
+//           if (latitude !== undefined && longitude !== undefined) {
+//             // Create marker for each result
+//             const marker = L.marker([latitude, longitude]).addTo(this.map);
+//             const zoomLevel = this.map.getZoom();
+//             marker.bindTooltip(`Zoom level : ${zoomLevel} <br> latitude: ${latitude}, longitude: ${longitude}<br>${locationName}<br> Net Allocation: 5362`, { permanent: true, direction: 'top' });
+//             this.markers.push(marker);
+//           } else {
+//             this.errorMessage = 'Invalid geocoding result';
+//             console.error('Invalid geocoding result:', result);
+//           }
+
+//         } else {
+//           this.errorMessage = 'No results found in Homa Bay County';
+//           console.error('No results found within in Homa Bay County');
+//         }
+
+//         } else {
+//           this.errorMessage = 'No results found in Kenya';
+//           console.error('No results found within in Kenya');
+//         }
+//       });
+
+//       // If there are markers, fit map bounds to all markers
+//       if (this.markers.length > 0) {
+//         const group = new L.featureGroup(this.markers);
+//         this.map.fitBounds(group.getBounds());
+//       }   
+//     } else {
+//       this.errorMessage = 'No results found';
+//       console.error('No results found');
+//     }
+//   });
 
 
-          console.log(result)
-
-          if (result) {
-            const location = result.center;
-            const locationName = result.name;
-            const latitude = location.lat;
-            const longitude = location.lng;
-
-            this.errorMessage = '';
-
-            if (latitude !== undefined && longitude !== undefined) {
-              if (this.marker) {
-                this.map.removeLayer(this.marker);
-              }
-              this.map.setView([latitude, longitude], 7);
-
-              this.marker = L.marker([latitude, longitude]).addTo(this.map);
-              const zoomLevel = this.map.getZoom();
-              console.log('Current Zoom Level:', zoomLevel);
-              this.marker.bindTooltip(`Zoom level : ${zoomLevel} <br> latitude: ${latitude}, longitude: ${longitude}<br>${locationName}<br> Net Allocation: 5362`, { permanent: true, direction: 'top' });
-
-            } else {
-              this.errorMessage = 'Invalid geocoding result';
-              console.error('Invalid geocoding result:', result);
-            }
-
-          } else {
-            this.errorMessage = 'No results found in Kenya';
-            console.error('No results found within in Kenya');
-          }
-        } else {
-          this.errorMessage = 'No results found';
-          console.error('No results found');
-        }
-      });
-
-
-
-
-    }, selectPlace(place) {
+// },
+ selectPlace(place) {
 
       // Selected village is converted to get coordinateds
 
     // searching location using coordinates 
+    // check if the input is place is empty
+    if (place === '') {
+      this.errorMessage = 'Please enter a location';
+      return;
+    }
+
   const selectedPlace = this.ActualVillageDataStoreA.find(feature => feature.properties.orgunit.name === place);
+  this.searchResults =[];
+  this.filteredPlaces = [];
   
   if (selectedPlace) {
+   
     const coordinates = selectedPlace.geometry.coordinates;
-    const villageName = this.searchQuery = selectedPlace.properties.orgunit.name;
+    const villageName = this.searchQuery = this.newVillageNameInput = selectedPlace.properties.orgunit.name;
     const orgunit_id =selectedPlace.properties.orgunit.orgunit_id
     const No_of_nets =selectedPlace.properties.orgunit.No_of_nets
 
@@ -638,15 +659,16 @@ this.searchResults = this.ActualVillageDataStoreA.filter(feature => {
     const  rejoinedCoordinates = strippedCoordinates.join(',');
 
 
-        this.searchLocationWithCoordinates(rejoinedCoordinates, orgunit_id, villageName, No_of_nets);
+    this.searchLocationWithCoordinates(rejoinedCoordinates, orgunit_id, villageName, No_of_nets);
 
 
-      } else if(selectedPlace === undefined ) {
+    } else if(selectedPlace === undefined ) {
 
         //Check in the  data store C which has no coordinates 
         const isSelectedPlaceHasNoCoordinates = this.ActualVillageDataStoreA.find(feature => feature.properties.orgunit.name.toLowerCase()  === place.toLowerCase() );
         //if found then
         if(isSelectedPlaceHasNoCoordinates){
+
         //check if user has right? 
         if(this.userHasRight){
           this.alertMessages = 'Allocate Coordinates to This location ';
@@ -664,21 +686,103 @@ this.searchResults = this.ActualVillageDataStoreA.filter(feature => {
           this.VillageregisterButton = false;
           this.searchVisibleIcon = true;
           
-        }else{
+        }else  {
           //else tell user location does not exist
           this.errorMessage = 'No coordinates found for this location.';
         }
       }else if(isSelectedPlaceHasNoCoordinates === undefined){
+        // location Not Found but posible Longitude and latitude
         //if not found in both data store B and C
-        this.errorMessage = 'Location Not Registered!';
+
+
+if(this.userHasRight){
+  console.log(place)
+
+    const geocoder = L.Control.Geocoder.nominatim();
+  this.errorMessage = '';
+
+  geocoder.geocode(place.trim() , results => {
+
+    if (results ) {
+    console.log("herere",results)
+
+      // Remove existing markers
+      this.removeMarkers();
+
+      console.log('Geocoding results:', results);
+      // Iterate through all results
+      // Check if the location is in Kenya and state County data
+       
+      this.storePosibleVillageLocation=[];
+      results.forEach(result => {
+        if (result.properties.address.country_code === "ke" ) {
+
+        // if( result.properties.address.state === "Homa Bay County"){
+          const location = result.center;
+          const locationName = result.name;
+          const latitude = location.lat;
+          const longitude = location.lng;
+
+          if (latitude !== undefined && longitude !== undefined) {
+            // Create marker for each result
+            const marker = L.marker([latitude, longitude]).addTo(this.map);
+            const zoomLevel = this.map.getZoom();
+            marker.bindTooltip(`Zoom level : ${zoomLevel} <br> latitude: ${latitude}, longitude: ${longitude}<br>${locationName}<br> Net Allocation: 5362`, { permanent: true, direction: 'top' });
+            this.markers.push(marker);
+            // store posible location with that county and village name
+            this.storePosibleVillageLocation.push({
+              "latitude": latitude,
+              "longitude": longitude,
+              "villageName": locationName
+            })
+          } else {
+            this.errorMessage = 'Invalid geocoding result';
+            console.error('Invalid geocoding result:', result);
+          }
+
+        // } else {
+        //   this.errorMessage = 'No results found in Homa Bay County';
+        //   console.error('No results found within in Homa Bay County');
+        // }
+
+        } else {
+          this.errorMessage = 'No results found in Kenya';
+          console.error('No results found within in Kenya');
+        }
+      });
+
+      // If there are markers, fit map bounds to all markers
+      if (this.markers.length > 0) {
+        const group = new L.featureGroup(this.markers);
+        this.map.fitBounds(group.getBounds());
+      }   
+    } else {
+      this.errorMessage = 'No results found';
+      console.error('No results found');
+    }
+  });
+
+
+
+}else{
+this.errorMessage = 'Selected place not found';
+console.error('Selected place not found ' );
+
+}
+         
+
+        
            
         
       }
 
       } else {
+
         console.error('Selected place not found:', place);
 
       }
+
+
     },
     searchLocationWithCoordinates(rejoinedCoordinates, orgunit_id, villageName, No_of_nets) {
       const coordinates = rejoinedCoordinates;
@@ -721,6 +825,7 @@ this.searchResults = this.ActualVillageDataStoreA.filter(feature => {
               this.errorMessage = 'Invalid geocoding result';
               console.error('Invalid geocoding result:', result);
             }
+
           } else {
             this.errorMessage = 'No results found in Kenya';
             console.error('No results found within in Kenya');
